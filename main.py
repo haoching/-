@@ -3,6 +3,7 @@ from nextcord.ext import commands
 import logging
 import json
 from dotenv import load_dotenv
+from os import environ
 
 load_dotenv()
 
