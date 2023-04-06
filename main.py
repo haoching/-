@@ -95,8 +95,27 @@ class CtfQuestionButtons(nextcord.ui.View):
       btn.callback = try_open_response
       self.add_item(btn)
 
-@client.command()
-async def test_dp(interaction: nextcord.Interaction):
+# @client.command()
+# async def test_dp(interaction: nextcord.Interaction):
+#   flag_embed = nextcord.Embed(
+#     title = f"中電會迎新CTF",
+#     description = f"點擊下面的按鈕來回答對應題目"
+#   )
+#   with open("group_data.json", "r", encoding = "utf-8") as f:
+#     group_data = json.load(f)
+#   for group in sorted(list(group_data.values()), key = lambda data: data.get('score'), reverse = True):
+#     flag_embed.add_field(
+#       name = group.get("name"),
+#       value = f"Score: {group.get('score')} | Answered: {len(group.get('answered'))}",
+#       inline = False
+#     )
+#   await interaction.channel.send(
+#     embed = flag_embed,
+#     view = CtfQuestionButtons()
+#   )
+
+@client.slash_command(description="My first slash command", guild_ids=None)
+async def test(interaction: nextcord.Interaction):
   flag_embed = nextcord.Embed(
     title = f"中電會迎新CTF",
     description = f"點擊下面的按鈕來回答對應題目"
@@ -114,4 +133,4 @@ async def test_dp(interaction: nextcord.Interaction):
     view = CtfQuestionButtons()
   )
 
-client.run("")
+client.run("OTY4NTMyMjY0MTc2NzIyMDEz.GlfYfu.XkRDOtsh-ARBPEWmr5mK96df1FIuRz3f9W5Wk8")
