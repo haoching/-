@@ -2,7 +2,11 @@ import nextcord
 from nextcord.ext import commands
 import logging
 import json
+from dotenv import load_dotenv
 
+load_dotenv()
+
+token = environ["TOKEN"]
 
 client = commands.AutoShardedBot(
   command_prefix = "CTF!",
@@ -133,4 +137,4 @@ async def test(interaction: nextcord.Interaction):
     view = CtfQuestionButtons()
   )
 
-client.run("OTY4NTMyMjY0MTc2NzIyMDEz.GlfYfu.XkRDOtsh-ARBPEWmr5mK96df1FIuRz3f9W5Wk8")
+client.run(token)
