@@ -138,4 +138,14 @@ async def test(interaction: nextcord.Interaction):
     view = CtfQuestionButtons()
   )
 
+@client.slash_command(description="My first slash command", guild_ids=None)
+async def auth(interaction: nextcord.Interaction,student_id:int):
+  with open("user_data.json", "r", encoding = "utf-8") as f:
+    user = json.load(f)
+    user[str(interaction.user.id)]=str(student_id)
+  with open("user_data.json", "w", encoding = "utf-8") as f:
+    json.dump(user, f, indent = 2, ensure_ascii = False)
+  #except ValueError:
+   #   await interaction.response.send_message(f"未參賽", ephemeral = True)
+
 client.run(token)
