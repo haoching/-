@@ -1,10 +1,10 @@
 {
-    "question": "哪一個是最高的山峰？",
+    "question": "q",
     "options": [
-      "Mount Everest",
-      "K2",
-      "Makalu",
-      "Lhotse"
+      "a",
+      "b",
+      "c",
+      "d"
     ],
-    "answer": "Mount Everest"
+    "answer": "a"
   }

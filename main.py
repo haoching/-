@@ -47,7 +47,7 @@ class CtfFlagResponseModal(nextcord.ui.Modal):
     self.flag_input = nextcord.ui.TextInput(
       label = "輸入答案",
       required = True,
-      placeholder = "SCAICT{some_flag_here}",
+      placeholder = "flag{some_flag_here}",
     )
     self.add_item(self.flag_input)
     self.client = client
@@ -57,7 +57,7 @@ class CtfFlagResponseModal(nextcord.ui.Modal):
       print("hello")
     answered = user_data.get(str(interaction.user.id), {}).get("answered", [])
     if self.flag_id in answered:
-      await interaction.response.send_message(f"小組成員已經完成 No. {self.flag_id} 了！", ephemeral = True)
+      await interaction.response.send_message(f"你已經完成 No. {self.flag_id} 了！", ephemeral = True)
       return
     if self.flag_input.value == self.flag:
       with open("user_data.json", "w", encoding = "utf-8") as f:
@@ -65,8 +65,8 @@ class CtfFlagResponseModal(nextcord.ui.Modal):
         user_data[str(interaction.user.id)]["answered"].append(self.flag_id)
         json.dump(user_data, f, indent = 2, ensure_ascii = False)
       flag_embed = nextcord.Embed(
-        title = f"中電會迎新CTF",
-        description = f"點擊下面的按鈕來回答對應題目"
+        title = f"電研數創第一屆定向越野大賽",
+        description = f"點擊下面的按鈕來回答"
       )
       with open("user_data.json", "r", encoding = "utf-8") as f:
         user_data = json.load(f)
@@ -114,7 +114,7 @@ class CtfFlagResponseModal(nextcord.ui.Modal):
         await interaction.followup.send('回答錯誤！')
       print("1")
     else:
-      await interaction.response.send_message(f"No. {self.flag_id} 答題錯誤，再試試看吧", ephemeral = True)
+      await interaction.response.send_message(f"No. {self.flag_id} 答題錯誤，可撥", ephemeral = True)
 
 
 class CtfQuestionButtons(nextcord.ui.View):
@@ -156,8 +156,8 @@ class CtfQuestionButtons(nextcord.ui.View):
 @client.slash_command(description="My first slash command", guild_ids=None)
 async def test(interaction: nextcord.Interaction):
   flag_embed = nextcord.Embed(
-    title = f"中電會迎新CTF",
-    description = f"點擊下面的按鈕來回答對應題目"
+    title = f"電研數創第一屆定向越野大賽",
+    description = f"點擊下面的按鈕來回答"
   )
   with open("user_data.json", "r", encoding = "utf-8") as f:
     group_data = json.load(f)
