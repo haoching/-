@@ -125,13 +125,29 @@ async def test(interaction: nextcord.Interaction):
     description = f"點擊下面的按鈕來回答"
   )
   with open("user_data.json", "r", encoding = "utf-8") as f:
-    group_data = json.load(f)
-  for group in sorted(list(group_data.values()), key = lambda data: data.get('score'), reverse = True):
+    user_data = json.load(f)
+  i = 0
+  d = {}
+  with open("club_member.csv","r", encoding= "utf-8") as f:
+    reader = csv.reader(f)
+    next(reader) # toss headers
+    for id, name in reader:
+      d.setdefault(id, []).append(name)
+  for group in sorted(list(user_data.values()), key = lambda data: data.get('score'), reverse = True):
+    if i >= 10:
+      break
+    student_id = group.get("student_id")
+    username = d.get(student_id)
+    if username is not None:
+      n = username[0]
+    else:
+      n = student_id+"(非社員)"
     flag_embed.add_field(
-      name = group.get("student_id"),
+      name = n,
       value = f"Score: {group.get('score')} | Answered: {len(group.get('answered'))}",
       inline = False
     )
+    i+=1
   await interaction.channel.send(
     embed = flag_embed,
     view = CtfQuestionButtons()
