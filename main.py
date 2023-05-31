@@ -5,13 +5,13 @@ import json
 from dotenv import load_dotenv
 from os import environ
 import csv
+import random
 
 load_dotenv()
 
 token = environ["TOKEN"]
 
 client = commands.AutoShardedBot(
-  command_prefix = "CTF!",
   intents = nextcord.Intents.all()
 )
 
@@ -71,7 +71,7 @@ class CtfFlagResponseModal(nextcord.ui.Modal):
         with open("user_data.json", "r", encoding = "utf-8") as f:
           user_data = json.load(f)
         d = {}
-        with open("club_member.csv","r", encoding= "utf-8") as f:
+        with open("member.csv","r", encoding= "utf-8") as f:
           reader = csv.reader(f)
           next(reader) # toss headers
           for id, name in reader:
@@ -95,7 +95,40 @@ class CtfFlagResponseModal(nextcord.ui.Modal):
         await interaction.edit(embed = flag_embed, view = CtfQuestionButtons())
         await interaction.followup.send(f"No. {self.flag_id} 答題正確，社團價值+100", ephemeral = True)
       else:
-        await interaction.response.send_message(f"No. {self.flag_id} 答題錯誤，可撥", ephemeral = True)
+        flag_embed = nextcord.Embed(
+          title = f"電研數創第一屆定向越野大賽",
+          description = f"點擊下面的按鈕來回答"
+        )
+        rnd = random.randint(10, 30)
+        user_data[str(interaction.user.id)]["score"] -= rnd
+        with open("user_data.json", "w", encoding = "utf-8") as f:
+          json.dump(user_data, f, indent = 2, ensure_ascii = False)
+        with open("user_data.json", "r", encoding = "utf-8") as f:
+          user_data = json.load(f)
+        d = {}
+        with open("member.csv","r", encoding= "utf-8") as f:
+          reader = csv.reader(f)
+          next(reader) # toss headers
+          for id, name in reader:
+            d.setdefault(id, []).append(name)
+        i = 0
+        for group in sorted(list(user_data.values()), key = lambda data: data.get('score'), reverse = True):
+          if i >= 10:
+            break
+          student_id = group.get("student_id")
+          username = d.get(student_id)
+          if username is not None:
+            n = username[0]
+          else:
+            n = student_id+"(非社員)"
+          flag_embed.add_field(
+            name = n,
+            value = f"Score: {group.get('score')} | Answered: {len(group.get('answered'))}",
+            inline = False
+          )
+          i+=1
+        await interaction.edit(embed = flag_embed, view = CtfQuestionButtons())
+        await interaction.followup.send(f"No. {self.flag_id} 答題錯誤，可撥，你被扣了{rnd}分哈哈", ephemeral = True)
     except:
       await interaction.response.send_message(f"未註冊，如已註冊請詢問工作人員", ephemeral = True)
 
@@ -117,8 +150,7 @@ class CtfQuestionButtons(nextcord.ui.View):
       btn.callback = try_open_response
       self.add_item(btn)
 
-
-@client.slash_command(description="My first slash command", guild_ids=None)
+@client.slash_command(description="東踏取蜜", guild_ids=None)
 async def test(interaction: nextcord.Interaction):
   flag_embed = nextcord.Embed(
     title = f"電研數創第一屆定向越野大賽",
@@ -128,13 +160,13 @@ async def test(interaction: nextcord.Interaction):
     user_data = json.load(f)
   i = 0
   d = {}
-  with open("club_member.csv","r", encoding= "utf-8") as f:
+  with open("member.csv","r", encoding= "utf-8") as f:
     reader = csv.reader(f)
     next(reader) # toss headers
     for id, name in reader:
       d.setdefault(id, []).append(name)
   for group in sorted(list(user_data.values()), key = lambda data: data.get('score'), reverse = True):
-    if i >= 10:
+    if i >= 25:
       break
     student_id = group.get("student_id")
     username = d.get(student_id)
@@ -153,7 +185,7 @@ async def test(interaction: nextcord.Interaction):
     view = CtfQuestionButtons()
   )
 
-@client.slash_command(description="My first slash command", guild_ids=None)
+@client.slash_command(description="Register", guild_ids=None)
 async def auth(interaction: nextcord.Interaction,student_id:int):
   try:
     if(student_id>11000000 and student_id<11199999):
